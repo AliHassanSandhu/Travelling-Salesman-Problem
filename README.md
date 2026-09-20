@@ -1,27 +1,33 @@
 # Problem
-TSP
-
-# Data
-data.csv where each row represent differnt cities with coordinates x,y.
+Traveling Salesperson Problem (TSP) / Asymmetric TSP (ATSP) using Genetic Algorithm.
 
 # Solution
-Prepare data and create distance matrix (eculidean distance) so don't have to compute again for same cites.
+Prepare data and compute a distance matrix (Euclidean or Asymmetric with directional modifiers/missing paths) once at startup to avoid recomputing during evaluation.
 
-Can represent cities as Index 0 for 1 city, 1 for 2nd and so on.
+Cities are indexed as `0, 1, 2, ..., N-1`.
 
 For 5 cities:
-Chromosome can be represented as: [0,2,1,4,3,0] showing Salesman starting from 0th city and visiting every city onece and returning to the same city.
+Chromosome is represented as: `[0, 2, 1, 4, 3, 0]` showing the salesman starting from city `0`, visiting every city exactly once, and returning to city `0`.
+
+# Features
+- **Matrix Caching:** Distance matrix computed once before GA execution.
+- **Asymmetric Support:** Directional costs ($i \to j \neq j \to i$) and disconnected routes (`np.inf`).
+- **Graph Visualization:** Uses NetworkX and Matplotlib to plot clear directed routes with curved arrows and weight labels.
 
 # To-Do's
-
-Population Creation, Selection, Crossover, mutaion, 
-
+- [x] Data Preparation & Distance Matrix Generation
+- [x] Initial Population Creation
+- [ ] Fitness Evaluation (handling `np.inf` paths)
+- [ ] Parent Selection (Tournament / Roulette Wheel)
+- [ ] Crossover Operator (Ordered Crossover / OX)
+- [ ] Mutation Operator (Swap / Inversion)
+- [ ] Main GA Loop & Plotting Best Route
 
 # How to setup
-pre-reqisuite: python 3.10+
+pre-requisite: python 3.10+
 
 ### Clone this repo 
-``` 
+```bash
 git clone <url>
 cd <folder>
 ```
