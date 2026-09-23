@@ -17,8 +17,8 @@ Chromosome is represented as: `[0, 2, 1, 4, 3, 0]` showing the salesman starting
 # To-Do's
 - [x] Data Preparation & Distance Matrix Generation
 - [x] Initial Population Creation
-- [ ] Fitness Evaluation (handling `np.inf` paths)
-- [ ] Parent Selection (Tournament / Roulette Wheel)
+- [x] Fitness Evaluation (handling `np.inf` paths)
+- [x] Parent Selection (Tournament / Roulette Wheel)
 - [ ] Crossover Operator (Ordered Crossover / OX)
 - [ ] Mutation Operator (Swap / Inversion)
 - [ ] Main GA Loop & Plotting Best Route

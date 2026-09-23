@@ -1,3 +1,4 @@
+from matplotlib import backend_bases
 from networkx.generators import spectral_graph_forge
 import numpy as np
 import pandas as pd
@@ -5,13 +6,14 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 class AsymmetricTSP:
-    def __init__(self, number_of_cities, population_size, mutation_rate, no_of_generations, connectivity_rate=0.8, seed=42):
+    def __init__(self, number_of_cities, population_size, mutation_rate, no_of_generations,generaton_gap,elitism, connectivity_rate=0.8, seed=42):
         self.no_of_cities = number_of_cities 
         self.population_size = population_size
         self.mutation_rate = mutation_rate
         self.no_of_generations = no_of_generations
         self.connectivity_rate = connectivity_rate
-        
+        self.elitism = elitism
+        self.generation_gap = generaton_gap
         self.rng = np.random.default_rng(seed=seed)
         
         self.df = self.generate_city_data()
@@ -88,24 +90,58 @@ class AsymmetricTSP:
                 population_list.append(route)
 
         self.population = np.array(population_list, dtype=int)
-        return self.population
+        return self.population    
 
-    def calculate_route_cost(self, route: list or np.ndarray):
-        """Calculates total cost using an explicit for loop."""
-        cost = 0.0
-        for i in range(self.no_of_cities):
-            from_city = route[i]
-            to_city = route[i + 1]
-            cost += self.distance_matrix[from_city][to_city]
+    def calculate_fitness(self,route: list or np.ndarray):
 
-        return cost     
+        valid_cost = 0
+        inf_count = 0
+        for  i in range(self.no_of_cities):
+            edge_cost = self.distance_matrix[route[i]][route[i+1]]
+            if np.isinf(edge_cost):
+                inf_count += 1
+                valid_cost += 500
+            else:
+                valid_cost += edge_cost
 
-    def population_cost(self):
+
+        fitness = 1.0/(valid_cost+inf_count)
+        return fitness, inf_count            
+
+    def tournament_selection(self, k=3):
+        selected_samples = self.rng.choice(self.population,size=k,replace=False)
+        print(f"selected Samples:\n {selected_samples}")
+        print("\n")
+        
+        candidates = []
+        for i in selected_samples:
+            candidates.append(self.calculate_fitness(i)[0])
+
+        print(candidates)    
+
+        max, idx = 0,None
+        for index,value in enumerate(candidates):
+            if max < value:
+                max = value
+                idx = index
+
+        return np.array(selected_samples[idx])        
+
+    def select_parents(self,k=3):
+        parent1 = self.tournament_selection(k)
+        parent2 = self.tournament_selection(k)
+
+        while np.array_equal(parent1,parent2):
+            parent2 = self.tournament_selection(k)
+
+        return parent1,parent2    
+
+    def population_fitnes(self):
         """Prints route and cost for each individual in the population."""
-        print("\n--- Population Cost Summary ---")
+        print("\n--- Fitness Summary ---")
         for idx, individual in enumerate(self.population):
-            cost = self.calculate_route_cost(individual)
-            print(f"Individual {idx:2d} | Route: {individual} | Cost: {cost}")
+            fitness, penalty = self.calculate_fitness(individual)
+            print(f"Individual {idx:2d} | Route: {individual} | fitness: {fitness} | penalty: {penalty}")
 
     def plot_graph(self):
 
@@ -163,12 +199,14 @@ class AsymmetricTSP:
 
 
 # Execution Parameters
-number_of_cities = 20
-population_size = 50
+number_of_cities = 10
+population_size = 10
 mutation_rate = 0.1
 no_of_generations = 10000
+elitism = 2
+generation_gap = 1
 
-tsp = AsymmetricTSP(number_of_cities, population_size, mutation_rate, no_of_generations, connectivity_rate=0.98)
+tsp = AsymmetricTSP(number_of_cities, population_size, mutation_rate, no_of_generations, connectivity_rate=0.8)
 
 print("--- Coordinates DataFrame ---")
 print(tsp.df)
@@ -177,6 +215,7 @@ print("\n--- Asymmetric Distance Matrix ---")
 print(tsp.distance_matrix)
 
 print(tsp.create_population())
-tsp.population_cost()
+#tsp.population_fitnes()
+print(tsp.select_parents())
 
 #tsp.plot_graph()
