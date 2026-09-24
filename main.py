@@ -1,4 +1,4 @@
-from matplotlib import backend_bases
+import atsp_read  
 from networkx.generators import spectral_graph_forge
 import numpy as np
 import pandas as pd
@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 
 class AsymmetricTSP:
-    def __init__(self, number_of_cities, population_size, mutation_rate, no_of_generations,generaton_gap,elitism, connectivity_rate=0.8, seed=42):
+    def __init__(self, number_of_cities, population_size, mutation_rate, no_of_generations,generaton_gap=1,elitism=2, connectivity_rate=0.8, seed=42):
         self.no_of_cities = number_of_cities 
         self.population_size = population_size
         self.mutation_rate = mutation_rate
@@ -15,18 +15,10 @@ class AsymmetricTSP:
         self.elitism = elitism
         self.generation_gap = generaton_gap
         self.rng = np.random.default_rng(seed=seed)
-        
-        self.df = self.generate_city_data()
-        self.prepare_distance_matrix()
-        #self.prepare_symmetric_distance_matrix()
 
-    def generate_city_data(self):
-        df = pd.DataFrame({
-            "index": np.arange(self.no_of_cities),
-            "x": self.rng.integers(10, 100, size=self.no_of_cities),
-            "y": self.rng.integers(10, 100, size=self.no_of_cities)
-        })
-        return df
+        #self.prepare_distance_matrix()
+        #self.prepare_symmetric_distance_matrix()
+        self.distance_matrix = atsp_read.read_tsplib("usa13509.tsp", self.no_of_cities)
 
     @staticmethod
     def euclidean_distance(pt1, pt2):
@@ -136,6 +128,8 @@ class AsymmetricTSP:
 
         return parent1,parent2    
 
+        
+
     def population_fitnes(self):
         """Prints route and cost for each individual in the population."""
         print("\n--- Fitness Summary ---")
@@ -206,10 +200,9 @@ no_of_generations = 10000
 elitism = 2
 generation_gap = 1
 
+
 tsp = AsymmetricTSP(number_of_cities, population_size, mutation_rate, no_of_generations, connectivity_rate=0.8)
 
-print("--- Coordinates DataFrame ---")
-print(tsp.df)
 
 print("\n--- Asymmetric Distance Matrix ---")
 print(tsp.distance_matrix)
