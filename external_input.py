@@ -25,10 +25,10 @@ def print_execution_timelog():
     for i in range(len(execution_timelog)):
         print(execution_timelog[i])
 
-def save_execution_timelog(description = ["",], filename = "output.txt"):
+def save_execution_timelog(description = [], header = "Execution log" ,filename = "output.txt"):
     try:
         file = open(filename, "w")
-        desc = ["Execution log\n"]
+        desc = [f"{header}\n"]
         if type(description) == dict:
             for key, value in description.items():
                 desc.append(f"{key}:{value}\n")

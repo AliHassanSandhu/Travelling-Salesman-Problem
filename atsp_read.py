@@ -231,13 +231,19 @@ def read_tsplib(filename, no_of_cities=None):
         # -----------------------------------------------------
 
         if edge_weight_type == "EUC_2D":
+            
+            x = coordinates[:no_of_cities, 0]
+            y = coordinates[:no_of_cities, 1]
 
+            dx = x[:no_of_cities, None] - x[None, :no_of_cities]
+            dy = y[:no_of_cities, None] - y[None, :no_of_cities]
+            '''
             x = coordinates[:, 0]
             y = coordinates[:, 1]
-
+            
             dx = x[:, None] - x[None, :]
             dy = y[:, None] - y[None, :]
-
+            '''
             matrix = np.sqrt(dx**2 + dy**2)
 
             # TSPLIB uses nearest integer
@@ -323,7 +329,7 @@ def read_tsplib(filename, no_of_cities=None):
     # ---------------------------------------------------------
 
     matrix = matrix[:no_of_cities, :no_of_cities]
-
+    print(f"Distance matrix shape: {matrix.shape} and type: {matrix.dtype} and values: {matrix}")
     return matrix
 
 
