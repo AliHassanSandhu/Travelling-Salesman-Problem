@@ -1,11 +1,15 @@
+import external_input as ex_input
 import atsp_read  
 from networkx.generators import spectral_graph_forge
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
+import sys
 
-class AsymmetricTSP:
+
+class AsymmetricTSP:    
+    @ex_input.LogExecutionTime
     def __init__(self, number_of_cities, population_size, mutation_rate, no_of_generations,generaton_gap=1,elitism=2, connectivity_rate=0.8, seed=42):
         self.no_of_cities = number_of_cities 
         self.population_size = population_size
@@ -85,6 +89,7 @@ class AsymmetricTSP:
         self.population = np.array(population_list, dtype=int)
         return self.population    
 
+    
     def calculate_fitness(self,route: list or np.ndarray):
 
         valid_cost = 0
@@ -120,6 +125,7 @@ class AsymmetricTSP:
 
         return np.array(selected_samples[idx])        
 
+    @ex_input.LogExecutionTime
     def select_parents(self,k=3):
         parent1 = self.tournament_selection(k)
         parent2 = self.tournament_selection(k)
@@ -259,15 +265,15 @@ class AsymmetricTSP:
         plt.tight_layout()
         plt.show()
 
-
 # Execution Parameters
-number_of_cities = 10
-population_size = 10
-mutation_rate = 0.1
-no_of_generations = 10000
-elitism = 2
+arg_names = ['number_of_cities', 'population_size', 'mutation_rate', 'no_of_generations', 'elitism']
+args = dict(zip(arg_names, ex_input.get_external_input([10, 10, 0.1,1000,2])))
+number_of_cities = 10 if type(args['number_of_cities']) != int else  args['number_of_cities']
+population_size = 10 if type(args['population_size']) != int else  args['population_size']
+mutation_rate = 0.1 if type(args['mutation_rate']) != float else  args['mutation_rate']
+no_of_generations = 10000 if type(args['no_of_generations']) != int else  args['no_of_generations']
+elitism = 2 if type(args['elitism']) != int else  args['elitism']
 generation_gap = 1
-
 
 tsp = AsymmetricTSP(number_of_cities, population_size, mutation_rate, no_of_generations, connectivity_rate=0.8)
 
