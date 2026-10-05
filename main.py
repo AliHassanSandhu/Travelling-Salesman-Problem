@@ -1,7 +1,13 @@
 import external_input as ex_input
+<<<<<<< HEAD
 import atsp_read
+=======
+import atsp_read  
+from networkx.generators import spectral_graph_forge
+>>>>>>> origin/crossover-and-mutation-operators
 import numpy as np
 import matplotlib.pyplot as plt
+<<<<<<< HEAD
 
 
 class AsymmetricTSP:
@@ -20,6 +26,16 @@ class AsymmetricTSP:
     ):
 
         self.no_of_cities = number_of_cities
+=======
+import networkx as nx
+import sys
+
+
+class AsymmetricTSP:    
+    @ex_input.LogExecutionTime
+    def __init__(self, number_of_cities, population_size, mutation_rate, no_of_generations,generaton_gap=1,elitism=2, connectivity_rate=0.8, seed=42):
+        self.no_of_cities = number_of_cities 
+>>>>>>> origin/crossover-and-mutation-operators
         self.population_size = population_size
         self.mutation_rate = mutation_rate
         self.no_of_generations = no_of_generations
@@ -29,11 +45,18 @@ class AsymmetricTSP:
 
         self.rng = np.random.default_rng(seed=seed)
 
+<<<<<<< HEAD
         
         self.distance_matrix = atsp_read.read_tsplib(
             "usa13509.tsp",
             self.no_of_cities
         )
+=======
+        #self.prepare_distance_matrix()
+        #self.prepare_symmetric_distance_matrix()
+        self.distance_matrix = atsp_read.read_tsplib("usa13509.tsp", self.no_of_cities)
+        self.is_symmetric = np.array_equal(self.distance_matrix, self.distance_matrix.T)
+>>>>>>> origin/crossover-and-mutation-operators
 
         self.is_symmetric = np.array_equal(
             self.distance_matrix,
@@ -70,10 +93,15 @@ class AsymmetricTSP:
             dtype=int
         )
 
+<<<<<<< HEAD
         return self.population
 
 
     def calculate_fitness(self, route):
+=======
+    
+    def calculate_fitness(self,route: list or np.ndarray):
+>>>>>>> origin/crossover-and-mutation-operators
 
         valid_cost = 0
         inf_count = 0
@@ -149,6 +177,11 @@ class AsymmetricTSP:
     @ex_input.LogExecutionTime
     def select_parents(self, k=3):
 
+<<<<<<< HEAD
+=======
+    @ex_input.LogExecutionTime
+    def select_parents(self,k=3):
+>>>>>>> origin/crossover-and-mutation-operators
         parent1 = self.tournament_selection(k)
         parent2 = self.tournament_selection(k)
 
@@ -156,8 +189,81 @@ class AsymmetricTSP:
 
             parent2 = self.tournament_selection(k)
 
+<<<<<<< HEAD
         return parent1, parent2
 
+=======
+        return parent1,parent2
+
+    def ordered_crossover(self, parent1, parent2):
+        """Ordered Crossover (OX). City 0 stays fixed at start/end, crossover happens on the intermediate cities."""
+        p1 = parent1[1:-1]
+        p2 = parent2[1:-1]
+        size = len(p1)
+
+        cut1, cut2 = np.sort(self.rng.choice(size, size=2, replace=False))
+
+        def make_child(segment_parent, order_parent):
+            child = np.full(size, -1, dtype=int)
+            child[cut1:cut2+1] = segment_parent[cut1:cut2+1]
+            used = set(child[cut1:cut2+1])
+
+            # Fill remaining positions (after cut2, wrapping around) with the other parent's order
+            order = np.concatenate((order_parent[cut2+1:], order_parent[:cut2+1]))
+            fill = [city for city in order if city not in used]
+
+            positions = list(range(cut2+1, size)) + list(range(0, cut1))
+            for pos, city in zip(positions, fill):
+                child[pos] = city
+
+            return np.concatenate(([0], child, [0]))
+
+        child1 = make_child(p1, p2)
+        child2 = make_child(p2, p1)
+
+        return child1, child2
+
+    def swap_mutation(self, route):
+        """Swaps two random intermediate cities with probability mutation_rate."""
+        route = route.copy()
+        if self.rng.random() < self.mutation_rate:
+            i, j = self.rng.choice(np.arange(1, self.no_of_cities), size=2, replace=False)
+            route[i], route[j] = route[j], route[i]
+        return route
+
+    def inversion_mutation(self, route):
+        """Reverses a random segment of intermediate cities with probability mutation_rate."""
+        route = route.copy()
+        if self.rng.random() < self.mutation_rate:
+            i, j = np.sort(self.rng.choice(np.arange(1, self.no_of_cities), size=2, replace=False))
+            route[i:j+1] = route[i:j+1][::-1]
+        return route
+
+    def insertion_mutation(self, route):
+        """Removes a random intermediate city and reinserts it at another position with probability mutation_rate."""
+        route = route.copy()
+        if self.rng.random() < self.mutation_rate:
+            i, j = self.rng.choice(np.arange(1, self.no_of_cities), size=2, replace=False)
+            city = route[i]
+            route = np.delete(route, i)
+            route = np.insert(route, j, city)
+        return route
+
+    def mutate(self, route):
+        """Applies a randomly chosen mutation operator.
+
+        Symmetric instances: swap, inversion or insertion.
+        Asymmetric instances: swap or insertion (inversion flips edge
+        directions, which is too disruptive for asymmetric costs).
+        """
+        if self.is_symmetric:
+            operators = [self.swap_mutation, self.inversion_mutation, self.insertion_mutation]
+        else:
+            operators = [self.swap_mutation, self.insertion_mutation]
+
+        operator = operators[self.rng.integers(len(operators))]
+        return operator(route)
+>>>>>>> origin/crossover-and-mutation-operators
 
     def ordered_crossover(self, parent1, parent2):
         """
@@ -599,6 +705,7 @@ class AsymmetricTSP:
 
         plt.show()
 
+<<<<<<< HEAD
 
 
 
@@ -618,6 +725,19 @@ args = dict(
         )
     )
 )
+=======
+# Execution Parameters
+arg_names = ['number_of_cities', 'population_size', 'mutation_rate', 'no_of_generations', 'elitism']
+args = dict(zip(arg_names, ex_input.get_external_input([10, 10, 0.1,1000,2])))
+number_of_cities = 10 if type(args['number_of_cities']) != int else  args['number_of_cities']
+population_size = 10 if type(args['population_size']) != int else  args['population_size']
+mutation_rate = 0.1 if type(args['mutation_rate']) != float else  args['mutation_rate']
+no_of_generations = 10000 if type(args['no_of_generations']) != int else  args['no_of_generations']
+elitism = 2 if type(args['elitism']) != int else  args['elitism']
+generation_gap = 1
+
+tsp = AsymmetricTSP(number_of_cities, population_size, mutation_rate, no_of_generations, connectivity_rate=0.8)
+>>>>>>> origin/crossover-and-mutation-operators
 
 
 number_of_cities = (
@@ -626,11 +746,30 @@ number_of_cities = (
     else 10
 )
 
+<<<<<<< HEAD
 population_size = (
     args["population_size"]
     if type(args["population_size"]) == int
     else 10
 )
+=======
+print(tsp.create_population())
+#tsp.population_fitnes()
+parent1, parent2 = tsp.select_parents()
+print(f"parent1: {parent1}")
+print(f"parent2: {parent2}")
+
+child1, child2 = tsp.ordered_crossover(parent1, parent2)
+print("\n--- Ordered Crossover (OX) ---")
+print(f"child1:  {child1}")
+print(f"child2:  {child2}")
+
+print("\n--- Mutation ---")
+print(f"swap:      {tsp.swap_mutation(child1)}")
+print(f"inversion: {tsp.inversion_mutation(child2)}")
+print(f"insertion: {tsp.insertion_mutation(child1)}")
+print(f"mutate:    {tsp.mutate(child2)}")
+>>>>>>> origin/crossover-and-mutation-operators
 
 mutation_rate = (
     args["mutation_rate"]
