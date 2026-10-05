@@ -1,32 +1,8 @@
 import external_input as ex_input
-<<<<<<< HEAD
-import atsp_read
-=======
 import atsp_read  
 from networkx.generators import spectral_graph_forge
->>>>>>> origin/crossover-and-mutation-operators
 import numpy as np
 import matplotlib.pyplot as plt
-<<<<<<< HEAD
-
-
-class AsymmetricTSP:
-
-    @ex_input.LogExecutionTime
-    def __init__(
-        self,
-        number_of_cities,
-        population_size,
-        mutation_rate,
-        no_of_generations,
-        generaton_gap=1,
-        elitism=2,
-        connectivity_rate=0.8,
-        seed=42
-    ):
-
-        self.no_of_cities = number_of_cities
-=======
 import networkx as nx
 import sys
 
@@ -35,7 +11,6 @@ class AsymmetricTSP:
     @ex_input.LogExecutionTime
     def __init__(self, number_of_cities, population_size, mutation_rate, no_of_generations,generaton_gap=1,elitism=2, connectivity_rate=0.8, seed=42):
         self.no_of_cities = number_of_cities 
->>>>>>> origin/crossover-and-mutation-operators
         self.population_size = population_size
         self.mutation_rate = mutation_rate
         self.no_of_generations = no_of_generations
@@ -45,18 +20,10 @@ class AsymmetricTSP:
 
         self.rng = np.random.default_rng(seed=seed)
 
-<<<<<<< HEAD
-        
-        self.distance_matrix = atsp_read.read_tsplib(
-            "usa13509.tsp",
-            self.no_of_cities
-        )
-=======
         #self.prepare_distance_matrix()
         #self.prepare_symmetric_distance_matrix()
         self.distance_matrix = atsp_read.read_tsplib("usa13509.tsp", self.no_of_cities)
         self.is_symmetric = np.array_equal(self.distance_matrix, self.distance_matrix.T)
->>>>>>> origin/crossover-and-mutation-operators
 
         self.is_symmetric = np.array_equal(
             self.distance_matrix,
@@ -93,15 +60,8 @@ class AsymmetricTSP:
             dtype=int
         )
 
-<<<<<<< HEAD
-        return self.population
-
-
-    def calculate_fitness(self, route):
-=======
     
     def calculate_fitness(self,route: list or np.ndarray):
->>>>>>> origin/crossover-and-mutation-operators
 
         valid_cost = 0
         inf_count = 0
@@ -173,15 +133,8 @@ class AsymmetricTSP:
             selected_samples[best_index]
         )
 
-
-    @ex_input.LogExecutionTime
-    def select_parents(self, k=3):
-
-<<<<<<< HEAD
-=======
     @ex_input.LogExecutionTime
     def select_parents(self,k=3):
->>>>>>> origin/crossover-and-mutation-operators
         parent1 = self.tournament_selection(k)
         parent2 = self.tournament_selection(k)
 
@@ -189,10 +142,6 @@ class AsymmetricTSP:
 
             parent2 = self.tournament_selection(k)
 
-<<<<<<< HEAD
-        return parent1, parent2
-
-=======
         return parent1,parent2
 
     def ordered_crossover(self, parent1, parent2):
@@ -263,7 +212,6 @@ class AsymmetricTSP:
 
         operator = operators[self.rng.integers(len(operators))]
         return operator(route)
->>>>>>> origin/crossover-and-mutation-operators
 
     def ordered_crossover(self, parent1, parent2):
         """
@@ -705,27 +653,6 @@ class AsymmetricTSP:
 
         plt.show()
 
-<<<<<<< HEAD
-
-
-
-arg_names = [
-    "number_of_cities",
-    "population_size",
-    "mutation_rate",
-    "no_of_generations",
-    "elitism"
-]
-
-args = dict(
-    zip(
-        arg_names,
-        ex_input.get_external_input(
-            [10, 10, 0.1, 1000, 2]
-        )
-    )
-)
-=======
 # Execution Parameters
 arg_names = ['number_of_cities', 'population_size', 'mutation_rate', 'no_of_generations', 'elitism']
 args = dict(zip(arg_names, ex_input.get_external_input([10, 10, 0.1,1000,2])))
@@ -737,7 +664,6 @@ elitism = 2 if type(args['elitism']) != int else  args['elitism']
 generation_gap = 1
 
 tsp = AsymmetricTSP(number_of_cities, population_size, mutation_rate, no_of_generations, connectivity_rate=0.8)
->>>>>>> origin/crossover-and-mutation-operators
 
 
 number_of_cities = (
@@ -746,13 +672,6 @@ number_of_cities = (
     else 10
 )
 
-<<<<<<< HEAD
-population_size = (
-    args["population_size"]
-    if type(args["population_size"]) == int
-    else 10
-)
-=======
 print(tsp.create_population())
 #tsp.population_fitnes()
 parent1, parent2 = tsp.select_parents()
@@ -769,7 +688,6 @@ print(f"swap:      {tsp.swap_mutation(child1)}")
 print(f"inversion: {tsp.inversion_mutation(child2)}")
 print(f"insertion: {tsp.insertion_mutation(child1)}")
 print(f"mutate:    {tsp.mutate(child2)}")
->>>>>>> origin/crossover-and-mutation-operators
 
 mutation_rate = (
     args["mutation_rate"]
@@ -828,7 +746,6 @@ print(
     f"Calculated Path Cost: "
     f"{1.0 / best_fitness:.2f}"
 )
-
 
 tsp.plot_convergence(
     best_fit_hist,
