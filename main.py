@@ -132,8 +132,7 @@ class AsymmetricTSP:
         return np.array(
             selected_samples[best_index]
         )
-
-    @ex_input.LogExecutionTime
+    
     def select_parents(self,k=3):
         parent1 = self.tournament_selection(k)
         parent2 = self.tournament_selection(k)
@@ -418,7 +417,7 @@ class AsymmetricTSP:
         return operator(route)
 
     # Main Loop
-
+    @ex_input.LogExecutionTime
     def run(self):
 
         """Main Genetic Algorithm execution loop."""
@@ -662,7 +661,7 @@ mutation_rate = 0.1 if type(args['mutation_rate']) != float else  args['mutation
 no_of_generations = 10000 if type(args['no_of_generations']) != int else  args['no_of_generations']
 elitism = 2 if type(args['elitism']) != int else  args['elitism']
 generation_gap = 1
-
+'''
 tsp = AsymmetricTSP(number_of_cities, population_size, mutation_rate, no_of_generations, connectivity_rate=0.8)
 
 
@@ -706,7 +705,7 @@ elitism = (
     if type(args["elitism"]) == int
     else 2
 )
-
+'''
 
 
 
@@ -729,6 +728,7 @@ tsp = AsymmetricTSP(
     best_cost_hist
 ) = tsp.run()
 
+ex_input.save_execution_timelog(args, f"Calculated lowest path cost {1.0 / best_fitness:.2f}\nOptimal Route Found:{best_route}", f"{args['number_of_cities']}CitiesSolve{args['no_of_generations']}.txt")
 
 print(
     "\n================ Optimization Finished ================"
