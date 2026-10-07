@@ -93,7 +93,7 @@ def read_tsplib(filename, no_of_cities=None):
         elif edge_weight_format == "LOWER_ROW":
             index = 0
             for i in range(dimension):
-                for j in range(j < i):
+                for j in range(i):
                     if i < no_of_cities and j < no_of_cities:
                         matrix[i, j] = values[index]
                         matrix[j, i] = values[index]
