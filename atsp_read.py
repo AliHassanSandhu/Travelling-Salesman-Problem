@@ -155,8 +155,8 @@ def read_tsplib(filename, no_of_cities=None):
         if edge_weight_type == "EUC_2D":
             x = coordinates[:, 0]
             y = coordinates[:, 1]
-            dx = x[:, None] - x[None, :]
-            dy = y[:, None] - y[None, :]
+            dx = x[:no_of_cities, None] - x[None, :no_of_cities]
+            dy = y[:no_of_cities, None] - y[None, :no_of_cities]
             matrix = np.floor(np.sqrt(dx**2 + dy**2) + 0.5)
 
         elif edge_weight_type == "CEIL_2D":
