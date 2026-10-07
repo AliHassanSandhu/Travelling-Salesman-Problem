@@ -1,6 +1,7 @@
 import numpy as np
 import itertools
 import atsp_read
+import external_input as ex_input
 
 
 class NaiveTSP:

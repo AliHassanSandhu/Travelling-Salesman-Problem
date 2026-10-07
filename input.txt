@@ -1,5 +1,5 @@
-15	#number of cities
-10	#population_size
+100	#number of cities
+100	#population_size
 0.1	#mutation_rate
-100	#no_of_generations
+200	#no_of_generations
 2	#elitism

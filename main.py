@@ -1,3 +1,11 @@
+# Group Members:
+# Ali Hassan
+# Junying Pang
+# Erik Stenerås
+# Yuvarani Selvaraj
+# Seralp Berke Akdeniz
+
+
 import genetic_aalgorithm_tsp as GA
 
 import matplotlib.pyplot as plt
@@ -102,74 +110,3 @@ tsp.plot_convergence(
     avg_fit_hist,
     best_cost_hist
 )
-
-
-# from naive_tsp import NaiveTSP
-
-
-# number_of_cities = 10
-
-# naive = NaiveTSP(
-#     number_of_cities=number_of_cities,
-#     tsp_file="usa13509.tsp"
-# )
-
-# best_route, best_cost = naive.run()
-
-# print(
-#     "Naive Best Route:",
-#     best_route
-# )
-
-# print(
-#     "Naive Best Cost:",
-#     best_cost
-# )
-
-
-
-# from dynamic_tsp import DynamicTSP
-
-
-# number_of_cities = 15
-
-# dp = DynamicTSP(
-#     number_of_cities=number_of_cities,
-#     tsp_file="usa13509.tsp"
-# )
-
-# best_route, best_cost = dp.run()
-
-# print(
-#     "DP Optimal Route:",
-#     best_route
-# )
-
-# print(
-#     "DP Optimal Cost:",
-#     best_cost
-# )
-
-
-# from hillclimbing_tsp import HillClimbingTSP
-
-
-# number_of_cities = 50
-
-# hill = HillClimbingTSP(
-#     number_of_cities=number_of_cities,
-#     tsp_file="usa13509.tsp",
-#     seed=42
-# )
-
-# best_route, best_cost = hill.run()
-
-# print(
-#     "Hill Climbing Route:",
-#     best_route
-# )
-
-# print(
-#     "Hill Climbing Cost:",
-#     best_cost
-# )

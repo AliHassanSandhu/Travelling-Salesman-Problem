@@ -1,5 +1,6 @@
 import numpy as np
 import atsp_read
+import external_input as ex_input
 
 
 class DynamicTSP:

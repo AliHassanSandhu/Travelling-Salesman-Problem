@@ -1,3 +1,4 @@
+from PIL import GimpGradientFile
 import numpy as np
 import atsp_read
 import external_input as ex_input
@@ -30,7 +31,7 @@ class Genitic_Algorithm:
 
         
         self.distance_matrix = atsp_read.read_tsplib(
-            "usa13509.tsp",
+            "rbg403.atsp",
             self.no_of_cities
         )
 
@@ -73,51 +74,28 @@ class Genitic_Algorithm:
 
 
     def calculate_fitness(self, route):
+    
+        total_cost = sum(
+            self.distance_matrix[route[i]][route[i + 1]]
+            for i in range(self.no_of_cities)
+        )
 
-        valid_cost = 0
-        inf_count = 0
+        fitness = 1.0 / (total_cost + 1e-9)
 
-        for i in range(self.no_of_cities):
-
-            edge_cost = self.distance_matrix[
-                route[i]
-            ][
-                route[i + 1]
-            ]
-
-            # if np.isinf(edge_cost):
-
-            #     inf_count += 1
-            #     valid_cost += 500
-
-            # else:
-
-            #     valid_cost += edge_cost
-
-        fitness = 1.0 / edge_cost
-
-        return fitness, inf_count
+        return fitness
 
 
     def evaluate_population(self):
         """Calculates fitness for the entire population."""
 
         fitnesses = []
-        penalties = []
 
         for individual in self.population:
 
-            fitness, penalty = self.calculate_fitness(
-                individual
-            )
-
+            fitness = self.calculate_fitness(individual)
             fitnesses.append(fitness)
-            penalties.append(penalty)
 
-        return (
-            np.array(fitnesses),
-            np.array(penalties)
-        )
+        return np.array(fitnesses)
 
 
     def tournament_selection(self, k=3):
@@ -134,7 +112,7 @@ class Genitic_Algorithm:
 
             fitness = self.calculate_fitness(
                 individual
-            )[0]
+            )
 
             candidates.append(fitness)
 
@@ -382,12 +360,8 @@ class Genitic_Algorithm:
 
     
 
-            fitnesses, penalties = (
-                self.evaluate_population()
-            )
-
+            fitnesses = self.evaluate_population()
     
-
             sorted_indices = np.argsort(
                 fitnesses
             )[::-1]
@@ -544,7 +518,7 @@ class Genitic_Algorithm:
         ax1.plot(
             best_fitness_history,
             label="Best Fitness",
-            linewidth=2
+            linewidth=2,
         )
 
         ax1.plot(
@@ -595,4 +569,6 @@ class Genitic_Algorithm:
 
         plt.tight_layout()
 
+        plt.savefig(f"./Plots/convergence_plot_{self.no_of_cities}_{self.population_size}_{self.no_of_generations}.png")
         plt.show()
+ 
