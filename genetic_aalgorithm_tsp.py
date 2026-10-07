@@ -145,7 +145,6 @@ class Genitic_Algorithm:
         )
 
 
-    @ex_input.LogExecutionTime
     def select_parents(self, k=3):
 
         parent1 = self.tournament_selection(k)
